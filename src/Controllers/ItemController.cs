@@ -1,5 +1,6 @@
 ﻿namespace todo.Controllers
 {
+    using System;
     using System.Net;
     using System.Threading.Tasks;
     using System.Web.Mvc;
@@ -7,11 +8,23 @@
 
     public class ItemController : Controller
     {
+        const string Configuration = "DocumentDB";  //DocumentDB or MongoDB
+
         [ActionName("Index")]
         public async Task<ActionResult> IndexAsync()
         {
-            var items = await DocumentDBRepository<Item>.GetItemsAsync(d => !d.Completed);
+            IRepository<Item> rep = CreateRepository();           
+           
+            var items = await rep.GetItemsAsync(d => !d.Completed);
             return View(items);
+        }
+
+        private IRepository<Item> CreateRepository()
+        {
+            if (Configuration == "DocumentDB")
+                return new DocumentDBRepository<Item>();
+            else
+                return null;
         }
 
 #pragma warning disable 1998
@@ -29,7 +42,8 @@
         {
             if (ModelState.IsValid)
             {
-                await DocumentDBRepository<Item>.CreateItemAsync(item);
+                IRepository<Item> rep = CreateRepository();
+                await rep.CreateItemAsync(item);
                 return RedirectToAction("Index");
             }
 
@@ -43,7 +57,8 @@
         {
             if (ModelState.IsValid)
             {
-                await DocumentDBRepository<Item>.UpdateItemAsync(item.Id, item);
+                IRepository<Item> rep = CreateRepository();
+                await rep.UpdateItemAsync(item.Id, item);
                 return RedirectToAction("Index");
             }
 
@@ -58,7 +73,8 @@
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Item item = await DocumentDBRepository<Item>.GetItemAsync(id, category);
+            IRepository<Item> rep = CreateRepository();
+            Item item = await rep.GetItemAsync(id, category);
             if (item == null)
             {
                 return HttpNotFound();
@@ -75,7 +91,8 @@
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Item item = await DocumentDBRepository<Item>.GetItemAsync(id, category);
+            IRepository<Item> rep = CreateRepository();
+            Item item = await rep.GetItemAsync(id, category);
             if (item == null)
             {
                 return HttpNotFound();
@@ -89,14 +106,16 @@
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmedAsync([Bind(Include = "Id, Category")] string id, string category)
         {
-            await DocumentDBRepository<Item>.DeleteItemAsync(id, category);
+            IRepository<Item> rep = CreateRepository();
+            await rep.DeleteItemAsync(id, category);
             return RedirectToAction("Index");
         }
 
         [ActionName("Details")]
         public async Task<ActionResult> DetailsAsync(string id, string category)
         {
-            Item item = await DocumentDBRepository<Item>.GetItemAsync(id, category);
+            IRepository<Item> rep = CreateRepository();
+            Item item = await rep.GetItemAsync(id, category);
             return View(item);
         }
     }

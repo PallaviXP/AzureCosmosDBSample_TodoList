@@ -13,7 +13,8 @@
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            DocumentDBRepository<todo.Models.Item>.Initialize();
+            IRepository<todo.Models.Item> rep = new DocumentDBRepository<todo.Models.Item>();
+            rep.Initialize();
         }
     }
 }
