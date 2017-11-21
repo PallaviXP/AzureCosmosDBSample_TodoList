@@ -1,4 +1,10 @@
 
+Important:-
+
+This application runs on Azure cosmos db emulator. You need to set emulator on your machine. The keys present in the web.config file are pointing to emulator local database.
+You can point to actual database by changing just emulator keys.
+
+
 # Web application development with ASP.NET MVC using DocumentDB
 This sample shows you how to use the Microsoft Azure DocumentDB service to store and access data from an ASP.NET MVC application hosted on Azure Websites. 
 
