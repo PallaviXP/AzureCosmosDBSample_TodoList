@@ -1,8 +1,24 @@
 
-Important:-
+# Important:-
 
 This application runs on Azure cosmos db emulator. You need to set emulator on your machine. The keys present in the web.config file are pointing to emulator local database.
 You can point to actual database by changing just emulator keys.
+
+For this example create below document db:-
+
+Create Database id :- todoitemdb
+Create collection :- todoitemcollection1
+partition key :- /category
+
+Document looks like as below
+{
+    "id": "3",
+    "category": "office",
+    "name": "furniture",
+    "description": "fix the window issue.",
+    "isComplete": false
+}
+
 
 
 # Web application development with ASP.NET MVC using DocumentDB
